@@ -15,9 +15,6 @@ export const getUserByToken = async (
       const authorization = req.headers
         .authorization as string
 
-      console.log(authorization)
-      console.log(req.headers)
-
       if (!authorization) {
         return res
           .status(403)

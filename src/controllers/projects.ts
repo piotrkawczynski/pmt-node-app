@@ -10,7 +10,8 @@ import {
 } from "../utils/utils"
 import { Status } from "../models/status"
 import { Tag } from "../models/tag"
-import { create } from "domain"
+import { IProject } from "../typings/Response/projects"
+import { Sequelize } from "sequelize"
 
 const getUserProjects = async (req, res) => {
   try {
@@ -49,10 +50,7 @@ const getUserProjects = async (req, res) => {
           userProject.project.image,
         ),
       }
-    })
-
-    // console.log(JSON.parse(JSON.stringify(userProjects)))
-    console.log(projects)
+    }) as IProject
 
     res.status(200).send({ data: projects })
   } catch (error) {
@@ -102,15 +100,10 @@ const getProject = async (req, res) => {
       JSON.stringify(userProject.get("project")),
     )
 
-    if (!project.attachment) {
-      project.image = null
-    } else {
-      project.image = createImageUrl(
-        req,
-        project.attachment.name,
-      )
+    if (project.image) {
+      project.image = createImageUrl(req, project.image)
     }
-    res.status(200).send(omit(project, "attachment"))
+    res.status(200).send(project)
   } catch (error) {
     console.log(error)
     res.status(400).send(createErrorMessage(error))
@@ -150,15 +143,10 @@ const getProjectStatuses = async (req, res) => {
     if (!statuses) {
       throw Error("No statuses found")
     }
-    console.log()
-    console.log(statuses)
-    console.log()
 
     const updatedStatuses = statuses.map((status) => {
       return updateObjectWithUrl<Status>(req, status)
     })
-
-    console.log(updatedStatuses)
 
     res.status(200).send({ data: updatedStatuses })
   } catch (error) {
@@ -212,9 +200,62 @@ const getProjectTags = async (req, res) => {
   }
 }
 
+const getProjectUsers = async (req, res) => {
+  try {
+    const { params, user } = req
+
+    const projectId = params.id
+    const userId = user.id
+
+    const userProject = await db.UserProjectPermission.findOne(
+      {
+        where: {
+          projectId,
+          userId,
+        },
+      },
+    )
+
+    if (!userProject) {
+      throw Error("Unauthorised request")
+    }
+
+    const usersProjectPermission = await db.UserProjectPermission.findAll(
+      {
+        where: {
+          projectId,
+        },
+        include: [
+          {
+            model: User,
+            attributes: {
+              exclude: [
+                "token",
+                "password",
+                "createdAt",
+                "updatedAt",
+              ],
+            },
+          },
+        ],
+      },
+    )
+
+    const users = usersProjectPermission.map(
+      (row) => row.user,
+    )
+
+    res.status(200).send({ data: users })
+  } catch (error) {
+    console.log(error)
+    res.status(400).send(createErrorMessage(error))
+  }
+}
+
 export {
   getUserProjects,
   getProject,
   getProjectStatuses,
   getProjectTags,
+  getProjectUsers,
 }

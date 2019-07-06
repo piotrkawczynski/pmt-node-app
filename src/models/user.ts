@@ -3,10 +3,9 @@ import {
   DataTypes,
   Model,
   HasManyGetAssociationsMixin,
-} from 'sequelize'
-import { omit } from 'lodash'
-import { Project } from './project'
-import { UserProjectPermission } from './userProjectPermission'
+} from "sequelize"
+import { omit } from "lodash"
+import { UserProjectPermission } from "./userProjectPermission"
 
 export class User extends Model {
   public id!: number
@@ -27,7 +26,9 @@ export class User extends Model {
   public toObject = () => {
     return this.get({ plain: true })
   }
-  public omitProps = (omitProps: string[] = ['createdAt, updatedAt']) => {
+  public omitProps = (
+    omitProps: string[] = ["createdAt, updatedAt"],
+  ) => {
     return omit(this.toObject(), omitProps)
   }
 }
@@ -46,10 +47,10 @@ export const UserFactory = (sequelize: Sequelize) => {
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: 'Required',
+            msg: "Required",
           },
           isEmail: {
-            msg: 'Invalid email format',
+            msg: "Invalid email format",
           },
         },
       },
@@ -58,7 +59,7 @@ export const UserFactory = (sequelize: Sequelize) => {
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: 'Required',
+            msg: "Required",
           },
         },
       },
@@ -67,7 +68,7 @@ export const UserFactory = (sequelize: Sequelize) => {
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: 'Required',
+            msg: "Required",
           },
         },
       },
@@ -76,7 +77,7 @@ export const UserFactory = (sequelize: Sequelize) => {
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: 'Required',
+            msg: "Required",
           },
         },
       },
@@ -85,7 +86,7 @@ export const UserFactory = (sequelize: Sequelize) => {
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: 'Required',
+            msg: "Required",
           },
         },
       },
@@ -96,8 +97,8 @@ export const UserFactory = (sequelize: Sequelize) => {
     },
     {
       sequelize,
-      tableName: 'user',
-      modelName: 'user',
+      tableName: "user",
+      modelName: "user",
     },
   )
 

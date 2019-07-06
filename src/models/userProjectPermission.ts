@@ -1,6 +1,7 @@
 import { Sequelize, DataTypes, Model } from "sequelize"
 import { Permission } from "./permission"
 import { Project } from "./project"
+import { User } from "./user"
 
 export class UserProjectPermission extends Model {
   public id!: number
@@ -10,6 +11,7 @@ export class UserProjectPermission extends Model {
 
   public permission!: Permission
   public project!: Project
+  public user!: User
 
   public static associate: (models) => void
 

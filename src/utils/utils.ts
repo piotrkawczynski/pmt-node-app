@@ -1,8 +1,7 @@
 import { Request, Response } from "express"
 import * as url from "url"
 import { Status } from "../models/status"
-import { omit } from "lodash"
-import { ValidationError } from "sequelize"
+import { Model, ValidationError } from "sequelize"
 
 export const createImageUrl = (
   req: Request,
@@ -21,17 +20,17 @@ export const updateObjectWithUrl = <T extends {}>(
 ) => {
   // @ts-ignore
   const plainObject = object.get({ plain: true }) as any
-  // @ts-ignore
   if (!plainObject.attachment) {
-    // @ts-ignore
     plainObject.image = null
   } else {
-    // @ts-ignore
     plainObject.image = createImageUrl(
       req,
       plainObject.attachment.name,
     )
   }
+  delete plainObject.attachment
+  // delete plainObject.attachmentId
+
   return omit(plainObject, ["attachment", "attachmentId"])
 }
 
@@ -52,6 +51,17 @@ export const createErrorMessage = (thrownError: any) => {
   }
 
   return { errors: error }
+}
+
+export const omit = (
+  object: object,
+  properties: string[],
+) => {
+  properties.forEach((property) => {
+    delete object[property]
+  })
+
+  return object
 }
 
 //
