@@ -6,7 +6,7 @@ import * as path from "path"
 import config from "./config/config"
 import { db } from "./database"
 // import { seed } from './seeds/seed'
-import { auth, projects, users } from "./routers"
+import { auth, projects, users, tags } from "./routers"
 import { getUserByToken } from "./middlewares/token"
 import { seed } from "./seeds/seed"
 
@@ -37,6 +37,7 @@ app.use("/auth", auth)
 app.use(getUserByToken)
 app.use("/projects", projects)
 app.use("/users", users)
+app.use("/tags", tags)
 
 db.sequelize
   // .sync({ force: true })

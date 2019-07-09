@@ -4,6 +4,7 @@ import {
   NextFunction,
 } from "express-serve-static-core"
 import { db } from "../database"
+import { UserProjectPermission } from "../models/userProjectPermission"
 
 export const getUserByToken = async (
   req: Request,

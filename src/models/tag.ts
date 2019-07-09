@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Model } from 'sequelize'
+import { Sequelize, DataTypes, Model } from "sequelize"
 
 export class Tag extends Model {
   public id!: number
@@ -23,6 +23,11 @@ export const TagFactory = (sequelize: Sequelize) => {
       name: {
         type: new DataTypes.STRING(128),
         allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: "Required",
+          },
+        },
       },
       attachmentId: {
         type: DataTypes.INTEGER.UNSIGNED,
@@ -31,14 +36,18 @@ export const TagFactory = (sequelize: Sequelize) => {
     },
     {
       sequelize,
-      tableName: 'tag',
-      modelName: 'tag',
+      tableName: "tag",
+      modelName: "tag",
     },
   )
 
   Tag.associate = (models) => {
-    Tag.belongsTo(models.Attachment, { foreignKey: 'attachmentId' })
-    models.Attachment.hasOne(Tag, { foreignKey: 'attachmentId' })
+    Tag.belongsTo(models.Attachment, {
+      foreignKey: "attachmentId",
+    })
+    models.Attachment.hasOne(Tag, {
+      foreignKey: "attachmentId",
+    })
   }
 
   return Tag
