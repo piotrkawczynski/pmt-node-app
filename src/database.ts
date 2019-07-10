@@ -1,5 +1,5 @@
-import { createModels } from './models'
+import { createModels } from "./models"
 
-import sequelizeConfig from './config/sequelizeConfig'
+import sequelizeConfig from "./config/sequelizeConfig"
 
 export const db = createModels(sequelizeConfig)

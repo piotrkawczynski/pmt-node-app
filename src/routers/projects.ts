@@ -3,6 +3,7 @@ import { projects } from "../controllers"
 
 export const router = express.Router()
 
+router.post("/tags", projects.tags)
 router.get("/:id/users", projects.getProjectUsers)
 router.get("/:id/tags", projects.getProjectTags)
 router.get("/:id/statuses", projects.getProjectStatuses)

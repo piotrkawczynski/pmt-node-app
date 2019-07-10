@@ -1,4 +1,11 @@
-import { Sequelize, DataTypes, Model } from "sequelize"
+import {
+  Sequelize,
+  DataTypes,
+  Model,
+  HasManySetAssociationsMixin,
+} from "sequelize"
+import { Status } from "./status"
+import { Tag } from "./tag"
 
 export class Project extends Model {
   public id!: number
@@ -11,6 +18,16 @@ export class Project extends Model {
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
+
+  public setStatuses!: HasManySetAssociationsMixin<
+    Status,
+    number
+  >
+
+  public setTags!: HasManySetAssociationsMixin<
+    Tag,
+    number
+  >
 
   public static associate: (models) => void
 }

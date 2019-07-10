@@ -1,4 +1,3 @@
-import { omit } from "lodash"
 import { db } from "../database"
 import { User } from "../models/user"
 import { Project } from "../models/project"
@@ -10,8 +9,6 @@ import {
 } from "../utils/utils"
 import { Status } from "../models/status"
 import { Tag } from "../models/tag"
-import { IProject } from "../typings/Response/projects"
-import { Sequelize } from "sequelize"
 
 const getUserProjects = async (req, res) => {
   try {
@@ -50,7 +47,7 @@ const getUserProjects = async (req, res) => {
           userProject.project.image,
         ),
       }
-    }) as IProject
+    })
 
     res.status(200).send({ data: projects })
   } catch (error) {
@@ -252,10 +249,69 @@ const getProjectUsers = async (req, res) => {
   }
 }
 
+const tags = async (req, res) => {
+  try {
+    const { body, user } = req
+
+    console.log("body", body)
+
+    const transactionResult = await createProjectTransaction(
+      body,
+    )
+
+    console.log("transactionResult", transactionResult)
+
+    res.status(200).send({ data: "" })
+  } catch (error) {
+    console.log(error)
+    res.status(400).send(createErrorMessage(error))
+  }
+}
+
+const createProjectTransaction = async (data) => {
+  const transaction = await db.sequelize.transaction()
+
+  try {
+    const project = await db.Project.create(data.project, {
+      transaction,
+    })
+
+    const createdTags = await db.Tag.bulkCreate(data.tags, {
+      transaction,
+    })
+
+    await project.setTags(createdTags, {
+      transaction,
+    })
+
+    const createdStatuses = await db.Status.bulkCreate(
+      data.statuses,
+      {
+        transaction,
+      },
+    )
+
+    await project.setStatuses(createdStatuses, {
+      transaction,
+    })
+
+    console.log("tags", tagsL)
+
+    // TODO: adding users to invite table to be able to send email with invitation
+    // await db.User.bulkCreate(data.users, { transaction })
+
+    await transaction.commit()
+  } catch (error) {
+    transaction.rollback()
+    console.log("error", error)
+  }
+}
+
 export {
   getUserProjects,
   getProject,
   getProjectStatuses,
   getProjectTags,
   getProjectUsers,
+  tags,
 }
