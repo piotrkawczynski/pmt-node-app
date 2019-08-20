@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Model } from 'sequelize'
+import { Sequelize, DataTypes, Model } from "sequelize"
 
 export class IssueSprint extends Model {
   public id!: number
@@ -9,14 +9,16 @@ export class IssueSprint extends Model {
   public readonly updatedAt!: Date
 }
 
-export const IssueSprintFactory = (sequelize: Sequelize) => {
+export const IssueSprintFactory = (
+  sequelize: Sequelize,
+) => {
   IssueSprint.init(
     {
       id: {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
       },
       issueId: {
         type: DataTypes.INTEGER.UNSIGNED,
@@ -25,13 +27,13 @@ export const IssueSprintFactory = (sequelize: Sequelize) => {
       sprintId: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
-      }
+      },
     },
     {
       sequelize,
-      tableName: 'issueSprint',
-      modelName: 'issueSprint'
-    }
+      tableName: "issueSprint",
+      modelName: "issueSprint",
+    },
   )
 
   return IssueSprint

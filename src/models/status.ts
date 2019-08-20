@@ -4,9 +4,9 @@ import {
   Model,
   BelongsToSetAssociationMixin,
   BelongsToGetAssociationMixin,
-} from 'sequelize'
-import { Project } from './project'
-import { Attachment } from './attachment'
+} from "sequelize"
+import { Project } from "./project"
+import { Attachment } from "./attachment"
 
 export class Status extends Model {
   public id!: number
@@ -20,7 +20,10 @@ export class Status extends Model {
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
 
-  public setProject!: BelongsToSetAssociationMixin<Project, Project['id']>
+  public setProject!: BelongsToSetAssociationMixin<
+    Project,
+    Project["id"]
+  >
   public getProject!: BelongsToGetAssociationMixin<Project>
 
   public static associate: (models) => void
@@ -49,14 +52,18 @@ export const StatusFactory = (sequelize: Sequelize) => {
     },
     {
       sequelize,
-      tableName: 'status',
-      modelName: 'status',
+      tableName: "status",
+      modelName: "status",
     },
   )
 
   Status.associate = (models) => {
-    Status.belongsTo(models.Attachment, { foreignKey: 'attachmentId' })
-    models.Attachment.hasOne(Status, { foreignKey: 'attachmentId' })
+    Status.belongsTo(models.Attachment, {
+      foreignKey: "attachmentId",
+    })
+    models.Attachment.hasOne(Status, {
+      foreignKey: "attachmentId",
+    })
   }
 
   return Status

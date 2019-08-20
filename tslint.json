@@ -11,6 +11,7 @@
     "quotemark": [true, "double"],
     "variable-name": [true, "allow-leading-underscore"],
     "semicolon": false,
-    "interface-name": false
+    "interface-name": false,
+    "no-namespace": false
   }
 }

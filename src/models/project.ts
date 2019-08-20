@@ -6,15 +6,17 @@ import {
 } from "sequelize"
 import { Status } from "./status"
 import { Tag } from "./tag"
+import { Invite } from "./invite"
 
 export class Project extends Model {
   public id!: number
   public name!: string
   public company!: string
-  public image!: string
-  public title!: string
+  public avatar!: string
+  public label!: string
   public color!: string
   public sprintDuration!: number
+  public completed!: number
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
@@ -23,11 +25,12 @@ export class Project extends Model {
     Status,
     number
   >
-
-  public setTags!: HasManySetAssociationsMixin<
-    Tag,
+  public setInvites!: HasManySetAssociationsMixin<
+    Invite,
     number
   >
+
+  public setTags!: HasManySetAssociationsMixin<Tag, number>
 
   public static associate: (models) => void
 }
@@ -49,11 +52,11 @@ export const ProjectFactory = (sequelize: Sequelize) => {
         type: new DataTypes.STRING(128),
         allowNull: false,
       },
-      image: {
+      avatar: {
         type: DataTypes.STRING(128),
         allowNull: true,
       },
-      title: {
+      label: {
         type: new DataTypes.STRING(128),
         allowNull: false,
       },
@@ -63,6 +66,10 @@ export const ProjectFactory = (sequelize: Sequelize) => {
       },
       sprintDuration: {
         type: new DataTypes.INTEGER(),
+      },
+      completed: {
+        type: DataTypes.TINYINT({ length: 1 }),
+        defaultValue: 0,
       },
     },
     {
@@ -82,6 +89,13 @@ export const ProjectFactory = (sequelize: Sequelize) => {
 
     Project.hasMany(models.Tag, { foreignKey: "projectId" })
     models.Tag.belongsTo(Project, {
+      foreignKey: "projectId",
+    })
+
+    Project.hasMany(models.Invite, {
+      foreignKey: "projectId",
+    })
+    models.Invite.belongsTo(Project, {
       foreignKey: "projectId",
     })
   }

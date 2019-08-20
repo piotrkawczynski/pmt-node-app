@@ -42,6 +42,7 @@ export const UserProjectPermissionFactory = (
       permissionId: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
+        defaultValue: 1,
       },
     },
     {

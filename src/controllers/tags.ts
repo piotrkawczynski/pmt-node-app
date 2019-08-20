@@ -1,35 +1,22 @@
-import { User } from "../models/user"
 import { db } from "../database"
 import { createErrorMessage } from "../utils/utils"
+import { CreateTagFields } from "../types/request/createTag"
 
 export const createTag = async (req, res) => {
   try {
-    const user = req.user as User
+    const fields = req.body as CreateTagFields
+    const image = req.file as Express.Multer.File
 
-    console.log(req.body)
+    const tag = await db.Tag.create({
+      ...fields,
+      image: image.filename,
+    })
 
-    const tag = await db.Tag.create({ ...req.body })
+    if (!tag) {
+      throw Error("Something went wrong")
+    }
 
-    console.log(tag.get({ plain: true }))
-
-    // if (!userProjects) {
-    //   throw Error("No projects found")
-    // }
-    //
-    // const projects = JSON.parse(
-    //   JSON.stringify(userProjects),
-    // ).map((userProject) => {
-    //   return {
-    //     ...userProject.project,
-    //     permissionId: userProject.permissionId,
-    //     image: createImageUrl(
-    //       req,
-    //       userProject.project.image,
-    //     ),
-    //   }
-    // }) as IProject
-
-    res.status(200).send({ data: "" })
+    res.status(200).send()
   } catch (error) {
     // tslint:disable-next-line:no-console
     console.error(error)

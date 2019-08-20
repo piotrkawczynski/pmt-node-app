@@ -3,9 +3,9 @@ import {
   Model,
   BelongsToManyAddAssociationsMixin,
   BelongsToManyAddAssociationMixin,
-  DataTypes
-} from 'sequelize'
-import { Issue} from './issue'
+  DataTypes,
+} from "sequelize"
+import { Issue } from "./issue"
 
 export class Sprint extends Model {
   public id!: number
@@ -17,8 +17,14 @@ export class Sprint extends Model {
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
-  public addIssues: BelongsToManyAddAssociationsMixin<Issue, number>
-  public addIssue: BelongsToManyAddAssociationMixin<Issue, number>
+  public addIssues: BelongsToManyAddAssociationsMixin<
+    Issue,
+    number
+  >
+  public addIssue: BelongsToManyAddAssociationMixin<
+    Issue,
+    number
+  >
 
   public static associate: (models) => void
 }
@@ -30,43 +36,47 @@ export const SprintFactory = (sequelize: Sequelize) => {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
       },
       number: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
+        allowNull: false,
       },
       description: {
         type: new DataTypes.STRING(),
-        allowNull: false
+        allowNull: false,
       },
       dateFrom: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
       },
       dateTo: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
       },
       projectId: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     },
     {
       sequelize,
-      tableName: 'sprint',
-      modelName: 'sprint'
-    }
+      tableName: "sprint",
+      modelName: "sprint",
+    },
   )
 
-  Sprint.associate = models => {
-    Sprint.belongsTo(models.Project, { foreignKey: 'projectId' })
-    models.Project.hasMany(Sprint, { foreignKey: 'projectId' })
+  Sprint.associate = (models) => {
+    Sprint.belongsTo(models.Project, {
+      foreignKey: "projectId",
+    })
+    models.Project.hasMany(Sprint, {
+      foreignKey: "projectId",
+    })
 
     Sprint.belongsToMany(models.Issue, {
-      through: 'issueSprint',
-      foreignKey: 'sprintId'
+      through: "issueSprint",
+      foreignKey: "sprintId",
     })
   }
   return Sprint

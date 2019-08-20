@@ -1,8 +1,4 @@
-import {
-  Sequelize,
-  DataTypes,
-  Model
-} from 'sequelize'
+import { Sequelize, DataTypes, Model } from "sequelize"
 
 export class Permission extends Model {
   public id!: number
@@ -20,22 +16,22 @@ export const PermissionFactory = (sequelize: Sequelize) => {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
       },
       description: {
         type: new DataTypes.STRING(128),
-        allowNull: false
+        allowNull: false,
       },
       permission: {
         type: new DataTypes.STRING(128),
-        allowNull: false
-      }
+        allowNull: false,
+      },
     },
     {
       sequelize,
-      tableName: 'permission',
-      modelName: 'permission'
-    }
+      tableName: "permission",
+      modelName: "permission",
+    },
   )
 
   return Permission

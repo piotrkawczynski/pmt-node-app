@@ -1,8 +1,4 @@
-import {
-  Sequelize,
-  DataTypes,
-  Model,
-} from 'sequelize'
+import { Sequelize, DataTypes, Model } from "sequelize"
 
 export class Comment extends Model {
   public id!: number
@@ -28,45 +24,53 @@ export const CommentFactory = (sequelize: Sequelize) => {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
       },
       issueId: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
+        allowNull: false,
       },
       authorId: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
+        allowNull: false,
       },
       description: {
         type: new DataTypes.STRING(),
-        allowNull: false
+        allowNull: false,
       },
       attachmentId: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: true
+        allowNull: true,
       },
       permission: {
         type: new DataTypes.STRING(),
-        allowNull: false
-      }
+        allowNull: false,
+      },
     },
     {
       sequelize,
-      tableName: 'comment',
-      modelName: 'comment'
-    }
+      tableName: "comment",
+      modelName: "comment",
+    },
   )
 
   Comment.associate = (models) => {
-    Comment.belongsTo(models.Issue, { foreignKey: 'issueId' })
-    models.Issue.hasMany(Comment, { foreignKey: 'issueId' })
+    Comment.belongsTo(models.Issue, {
+      foreignKey: "issueId",
+    })
+    models.Issue.hasMany(Comment, { foreignKey: "issueId" })
 
-    Comment.belongsTo(models.User, { foreignKey: 'authorId' })
-    models.User.hasMany(Comment, { foreignKey: 'authorId' })
+    Comment.belongsTo(models.User, {
+      foreignKey: "authorId",
+    })
+    models.User.hasMany(Comment, { foreignKey: "authorId" })
 
-    Comment.belongsTo(models.Attachment, { foreignKey: 'attachmentId' })
-    models.Attachment.hasMany(Comment, { foreignKey: 'attachmentId' })
+    Comment.belongsTo(models.Attachment, {
+      foreignKey: "attachmentId",
+    })
+    models.Attachment.hasMany(Comment, {
+      foreignKey: "attachmentId",
+    })
   }
 
   return Comment

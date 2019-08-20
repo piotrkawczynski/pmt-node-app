@@ -1,6 +1,5 @@
 import { db } from "../database"
 import { User } from "../models/user"
-import { Project } from "../models/project"
 import { Attachment } from "../models/attachment"
 import {
   createErrorMessage,
@@ -9,17 +8,21 @@ import {
 } from "../utils/utils"
 import { Status } from "../models/status"
 import { Tag } from "../models/tag"
+import { CreateProjectFields } from "../types/request/createProject"
+import { Project } from "../types/models/Project"
+import { Project as DbProject } from "../models/project"
+import { Request } from "../types/express/express"
 
-const getUserProjects = async (req, res) => {
+const getUserProjects = async (req: Request, res) => {
   try {
-    const user = req.user as User
+    const user = req.user
 
     const userProjects = await db.UserProjectPermission.findAll(
       {
         where: {
           userId: user.id,
         },
-        include: [{ model: Project, as: "project" }],
+        include: [{ model: DbProject, as: "project" }],
         attributes: {
           exclude: [
             "id",
@@ -36,20 +39,18 @@ const getUserProjects = async (req, res) => {
       throw Error("No projects found")
     }
 
-    const projects = JSON.parse(
-      JSON.stringify(userProjects),
-    ).map((userProject) => {
+    const projects = userProjects.map((userProject) => {
       return {
-        ...userProject.project,
+        ...userProject.project.get(),
         permissionId: userProject.permissionId,
-        image: createImageUrl(
+        avatar: createImageUrl(
           req,
-          userProject.project.image,
+          userProject.project.avatar,
         ),
       }
     })
 
-    res.status(200).send({ data: projects })
+    res.status(200).send(projects)
   } catch (error) {
     // tslint:disable-next-line:no-console
     console.error(error)
@@ -72,7 +73,7 @@ const getProject = async (req, res) => {
         },
         include: [
           {
-            model: Project,
+            model: DbProject,
             as: "project",
           },
         ],
@@ -93,12 +94,10 @@ const getProject = async (req, res) => {
       throw Error("No project found")
     }
 
-    const project = JSON.parse(
-      JSON.stringify(userProject.get("project")),
-    )
+    const project = userProject.get("project")
 
-    if (project.image) {
-      project.image = createImageUrl(req, project.image)
+    if (project.avatar) {
+      project.avatar = createImageUrl(req, project.avatar)
     }
     res.status(200).send(project)
   } catch (error) {
@@ -249,19 +248,31 @@ const getProjectUsers = async (req, res) => {
   }
 }
 
-const tags = async (req, res) => {
+const createProject = async (req, res) => {
   try {
-    const { body, user } = req
+    const fields = req.body as CreateProjectFields
+    const avatar = req.file as Express.Multer.File
 
-    console.log("body", body)
+    const project: Project = {
+      ...fields,
+      sprintDuration: Number(fields.sprintDuration),
+      avatar: avatar.filename,
+    }
+    console.log(req.body)
+    console.log(req.file)
 
-    const transactionResult = await createProjectTransaction(
-      body,
+    const createdProject = await db.Project.create(project)
+
+    const userProject = await db.UserProjectPermission.create(
+      {
+        projectId: createdProject.id,
+        userId: req.user.id,
+        permissionId: 2,
+      },
     )
+    console.log("projectData", userProject)
 
-    console.log("transactionResult", transactionResult)
-
-    res.status(200).send({ data: "" })
+    res.status(200).send()
   } catch (error) {
     console.log(error)
     res.status(400).send(createErrorMessage(error))
@@ -272,38 +283,44 @@ const createProjectTransaction = async (data) => {
   const transaction = await db.sequelize.transaction()
 
   try {
+    console.log(data)
+
     const project = await db.Project.create(data.project, {
       transaction,
     })
 
-    const createdTags = await db.Tag.bulkCreate(data.tags, {
-      transaction,
-    })
+    console.log(project)
 
-    await project.setTags(createdTags, {
-      transaction,
-    })
-
-    const createdStatuses = await db.Status.bulkCreate(
-      data.statuses,
-      {
-        transaction,
-      },
-    )
-
-    await project.setStatuses(createdStatuses, {
-      transaction,
-    })
-
-    console.log("tags", tagsL)
-
-    // TODO: adding users to invite table to be able to send email with invitation
-    // await db.User.bulkCreate(data.users, { transaction })
+    // const createdTags = await db.Tag.bulkCreate(data.tags, {
+    //   transaction,
+    // })
+    // await project.setTags(createdTags, {
+    //   transaction,
+    // })
+    //
+    // const createdStatuses = await db.Status.bulkCreate(
+    //   data.statuses,
+    //   {
+    //     transaction,
+    //   },
+    // )
+    // await project.setStatuses(createdStatuses, {
+    //   transaction,
+    // })
+    //
+    // const createdInvites = await db.Invite.bulkCreate(
+    //   data.users,
+    //   { transaction },
+    // )
+    // await project.setInvites(createdInvites, {
+    //   transaction,
+    // })
 
     await transaction.commit()
   } catch (error) {
     transaction.rollback()
     console.log("error", error)
+    throw Error(error.message)
   }
 }
 
@@ -313,5 +330,5 @@ export {
   getProjectStatuses,
   getProjectTags,
   getProjectUsers,
-  tags,
+  createProject,
 }

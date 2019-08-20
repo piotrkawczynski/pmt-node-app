@@ -1,8 +1,4 @@
-import {
-  Sequelize,
-  DataTypes,
-  Model,
-} from 'sequelize'
+import { Sequelize, DataTypes, Model } from "sequelize"
 
 export class Invite extends Model {
   public id!: number
@@ -21,26 +17,26 @@ export const InviteFactory = (sequelize: Sequelize) => {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
       },
       email: {
         type: new DataTypes.STRING(200),
-        allowNull: false
+        allowNull: false,
       },
       projectId: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
+        allowNull: true,
       },
       permissionId: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     },
     {
       sequelize,
-      tableName: 'invite',
-      modelName: 'invite'
-    }
+      tableName: "invite",
+      modelName: "invite",
+    },
   )
 
   return Invite

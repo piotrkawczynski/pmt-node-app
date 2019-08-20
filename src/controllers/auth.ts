@@ -63,6 +63,15 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body
 
+    if (!email || !password) {
+      throw {
+        name: "email",
+        message: "Invalid email or password",
+      }
+    }
+
+    console.log(email, password)
+
     const user = await db.User.findOne({ where: { email } })
 
     if (!user) {

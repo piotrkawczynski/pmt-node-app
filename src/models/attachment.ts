@@ -2,7 +2,7 @@ import { Sequelize, DataTypes, Model } from "sequelize"
 
 export class Attachment extends Model {
   public id!: number
-  public name!: string
+  public image!: string
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
@@ -17,7 +17,7 @@ export const AttachmentFactory = (sequelize: Sequelize) => {
         primaryKey: true,
         allowNull: false,
       },
-      name: {
+      image: {
         type: new DataTypes.STRING(),
         allowNull: false,
       },
