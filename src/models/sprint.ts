@@ -3,7 +3,7 @@ import {
   Model,
   BelongsToManyAddAssociationsMixin,
   BelongsToManyAddAssociationMixin,
-  DataTypes,
+  DataTypes, HasManyGetAssociationsMixin,
 } from "sequelize"
 import { Issue } from "./issue"
 
@@ -25,6 +25,7 @@ export class Sprint extends Model {
     Issue,
     number
   >
+  public getIssues: HasManyGetAssociationsMixin<Issue>
 
   public static associate: (models) => void
 }
@@ -74,8 +75,11 @@ export const SprintFactory = (sequelize: Sequelize) => {
       foreignKey: "projectId",
     })
 
-    Sprint.belongsToMany(models.Issue, {
-      through: "issueSprint",
+    Sprint.hasMany(models.Issue, {
+      foreignKey: "sprintId",
+    })
+
+    Issue.belongsTo(models.Sprint, {
       foreignKey: "sprintId",
     })
   }

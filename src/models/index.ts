@@ -18,6 +18,7 @@ export const createModels = (sequelizeConfig: any) => {
     password,
     params,
   } = sequelizeConfig
+
   const sequelize = new Sequelize(
     database,
     username,

@@ -10,7 +10,9 @@ export const createFileName = (
     .update(fileName + Date.now().toString())
     .digest("hex")
 
-  const extension: string = path.extname(originalName).toLowerCase()
+  const extension: string = path
+    .extname(originalName)
+    .toLowerCase()
 
   return name + extension
 }

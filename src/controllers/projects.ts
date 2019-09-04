@@ -1,21 +1,26 @@
 import { db } from "../database"
 import { User } from "../models/user"
-import { Attachment } from "../models/attachment"
 import {
   createErrorMessage,
   createImageUrl,
-  updateObjectWithUrl,
 } from "../utils/utils"
-import { Status } from "../models/status"
-import { Tag } from "../models/tag"
-import { CreateProjectFields } from "../types/request/createProject"
+import { CreateProjectFields } from "../types/request/project/createProject"
 import { Project } from "../types/models/Project"
 import { Project as DbProject } from "../models/project"
-import { Request } from "../types/express/express"
+import {
+  Request,
+  RequestParams,
+  Response,
+} from "../types/express/express"
+import { UserLocals } from "../types/locals/userLocals"
+import { ProjectLocals } from "../types/locals/projectLocals"
 
-const getUserProjects = async (req: Request, res) => {
+const getUserProjects = async (
+  req: RequestParams<{ id: number }>,
+  res: Response<UserLocals>,
+) => {
   try {
-    const user = req.user
+    const { user } = res.locals
 
     const userProjects = await db.UserProjectPermission.findAll(
       {
@@ -58,11 +63,14 @@ const getUserProjects = async (req: Request, res) => {
   }
 }
 
-const getProject = async (req, res) => {
+const getProject = async (
+  req: RequestParams<{ id: number }>,
+  res: Response,
+) => {
   try {
-    const { params, user } = req
+    const { user } = res.locals
 
-    const projectId = params.id
+    const projectId = req.params.id
     const userId = user.id
 
     const userProject = await db.UserProjectPermission.findOne(
@@ -106,25 +114,12 @@ const getProject = async (req, res) => {
   }
 }
 
-const getProjectStatuses = async (req, res) => {
+const getProjectStatuses = async (
+  req: Request<{ id: number }>,
+  res: Response,
+) => {
   try {
-    const { params, user } = req
-
-    const projectId = params.id
-    const userId = user.id
-
-    const userProject = await db.UserProjectPermission.findOne(
-      {
-        where: {
-          projectId,
-          userId,
-        },
-      },
-    )
-
-    if (!userProject) {
-      throw Error("Unauthorised request")
-    }
+    const projectId = req.params.id
 
     const statuses = await db.Status.findAll({
       where: {
@@ -133,43 +128,21 @@ const getProjectStatuses = async (req, res) => {
       attributes: {
         exclude: ["projectId"],
       },
-      include: [{ model: Attachment }],
     })
 
-    if (!statuses) {
-      throw Error("No statuses found")
-    }
-
-    const updatedStatuses = statuses.map((status) => {
-      return updateObjectWithUrl<Status>(req, status)
-    })
-
-    res.status(200).send({ data: updatedStatuses })
+    res.status(200).send(statuses)
   } catch (error) {
     console.log(error)
     res.status(400).send(createErrorMessage(error))
   }
 }
 
-const getProjectTags = async (req, res) => {
+const getProjectTags = async (
+  req: RequestParams<{ id: number }>,
+  res: Response,
+) => {
   try {
-    const { params, user } = req
-
-    const projectId = params.id
-    const userId = user.id
-
-    const userProject = await db.UserProjectPermission.findOne(
-      {
-        where: {
-          projectId,
-          userId,
-        },
-      },
-    )
-
-    if (!userProject) {
-      throw Error("Unauthorised request")
-    }
+    const projectId = req.params.id
 
     const tags = await db.Tag.findAll({
       where: {
@@ -178,43 +151,28 @@ const getProjectTags = async (req, res) => {
       attributes: {
         exclude: ["projectId"],
       },
-      include: [{ model: Attachment }],
     })
-
-    if (!tags) {
-      throw Error("No tags found")
-    }
 
     const updatedTags = tags.map((tag) => {
-      return updateObjectWithUrl<Tag>(req, tag)
+      return {
+        ...tag.get(),
+        image: createImageUrl(req, tag.image),
+      }
     })
 
-    res.status(200).send({ data: updatedTags })
+    res.status(200).send(updatedTags)
   } catch (error) {
     console.log(error)
     res.status(400).send(createErrorMessage(error))
   }
 }
 
-const getProjectUsers = async (req, res) => {
+const getProjectUsers = async (
+  req: Request<{ id: number }>,
+  res: Response<UserLocals>,
+) => {
   try {
-    const { params, user } = req
-
-    const projectId = params.id
-    const userId = user.id
-
-    const userProject = await db.UserProjectPermission.findOne(
-      {
-        where: {
-          projectId,
-          userId,
-        },
-      },
-    )
-
-    if (!userProject) {
-      throw Error("Unauthorised request")
-    }
+    const projectId = req.params.id
 
     const usersProjectPermission = await db.UserProjectPermission.findAll(
       {
@@ -237,18 +195,65 @@ const getProjectUsers = async (req, res) => {
       },
     )
 
-    const users = usersProjectPermission.map(
-      (row) => row.user,
-    )
+    const users = usersProjectPermission.map((row) => ({
+      ...row.user.get(),
+      permission: row.permissionId,
+    }))
 
-    res.status(200).send({ data: users })
+    res.status(200).send(users)
   } catch (error) {
     console.log(error)
     res.status(400).send(createErrorMessage(error))
   }
 }
 
-const createProject = async (req, res) => {
+const getProjectInvites = async (
+  req: Request<{ id: number }>,
+  res: Response<UserLocals>,
+) => {
+  try {
+    const projectId = req.params.id
+
+    const inviteList = await db.Invite.findAll({
+      where: {
+        projectId,
+      },
+      attributes: {
+        exclude: ["projectId"],
+      },
+    })
+
+    res.status(200).send(inviteList)
+  } catch (error) {
+    console.log(error)
+    res.status(400).send(createErrorMessage(error))
+  }
+}
+
+const getProjectSprints = async (
+  req: Request<{ id: number }>,
+  res: Response<UserLocals>,
+) => {
+  try {
+    const projectId = req.params.id
+
+    const sprintList = await db.Sprint.findAll({
+      where: {
+        projectId,
+      },
+      attributes: {
+        exclude: ["projectId", "createdAt", "updatedAt"],
+      },
+    })
+
+    res.status(200).send(sprintList)
+  } catch (error) {
+    console.log(error)
+    res.status(400).send(createErrorMessage(error))
+  }
+}
+
+const createProject = async (req: Request, res) => {
   try {
     const fields = req.body as CreateProjectFields
     const avatar = req.file as Express.Multer.File
@@ -258,69 +263,19 @@ const createProject = async (req, res) => {
       sprintDuration: Number(fields.sprintDuration),
       avatar: avatar.filename,
     }
-    console.log(req.body)
-    console.log(req.file)
 
     const createdProject = await db.Project.create(project)
 
-    const userProject = await db.UserProjectPermission.create(
-      {
-        projectId: createdProject.id,
-        userId: req.user.id,
-        permissionId: 2,
-      },
-    )
-    console.log("projectData", userProject)
+    await db.UserProjectPermission.create({
+      projectId: createdProject.id,
+      userId: res.locals.user.id,
+      permissionId: 2,
+    })
 
     res.status(200).send()
   } catch (error) {
     console.log(error)
     res.status(400).send(createErrorMessage(error))
-  }
-}
-
-const createProjectTransaction = async (data) => {
-  const transaction = await db.sequelize.transaction()
-
-  try {
-    console.log(data)
-
-    const project = await db.Project.create(data.project, {
-      transaction,
-    })
-
-    console.log(project)
-
-    // const createdTags = await db.Tag.bulkCreate(data.tags, {
-    //   transaction,
-    // })
-    // await project.setTags(createdTags, {
-    //   transaction,
-    // })
-    //
-    // const createdStatuses = await db.Status.bulkCreate(
-    //   data.statuses,
-    //   {
-    //     transaction,
-    //   },
-    // )
-    // await project.setStatuses(createdStatuses, {
-    //   transaction,
-    // })
-    //
-    // const createdInvites = await db.Invite.bulkCreate(
-    //   data.users,
-    //   { transaction },
-    // )
-    // await project.setInvites(createdInvites, {
-    //   transaction,
-    // })
-
-    await transaction.commit()
-  } catch (error) {
-    transaction.rollback()
-    console.log("error", error)
-    throw Error(error.message)
   }
 }
 
@@ -330,5 +285,7 @@ export {
   getProjectStatuses,
   getProjectTags,
   getProjectUsers,
+  getProjectInvites,
   createProject,
+  getProjectSprints,
 }

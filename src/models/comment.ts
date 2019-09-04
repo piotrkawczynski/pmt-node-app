@@ -1,4 +1,11 @@
-import { Sequelize, DataTypes, Model } from "sequelize"
+import {
+  Sequelize,
+  DataTypes,
+  Model,
+  BelongsToManySetAssociationsMixin,
+} from "sequelize"
+import { Attachment } from "./attachment"
+import { Issue } from "./issue"
 
 export class Comment extends Model {
   public id!: number
@@ -9,10 +16,15 @@ export class Comment extends Model {
   public title!: string
   public description!: string
   public attachmentId!: number
-  public permission!: string
+  public permissionId!: string
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
+
+  public setAttachments!: BelongsToManySetAssociationsMixin<
+    Attachment,
+    Attachment["id"]
+  >
 
   public static associate: (models) => void
 }
@@ -38,12 +50,8 @@ export const CommentFactory = (sequelize: Sequelize) => {
         type: new DataTypes.STRING(),
         allowNull: false,
       },
-      attachmentId: {
+      permissionId: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: true,
-      },
-      permission: {
-        type: new DataTypes.STRING(),
         allowNull: false,
       },
     },
@@ -65,10 +73,19 @@ export const CommentFactory = (sequelize: Sequelize) => {
     })
     models.User.hasMany(Comment, { foreignKey: "authorId" })
 
-    Comment.belongsTo(models.Attachment, {
-      foreignKey: "attachmentId",
+    Comment.belongsTo(models.Permission, {
+      foreignKey: "permissionId",
     })
-    models.Attachment.hasMany(Comment, {
+    models.Permission.hasMany(Comment, {
+      foreignKey: "permissionId",
+    })
+
+    Comment.belongsToMany(models.Attachment, {
+      through: "commentAttachment",
+      foreignKey: "commentId",
+    })
+    models.Attachment.belongsToMany(Comment, {
+      through: "commentAttachment",
       foreignKey: "attachmentId",
     })
   }

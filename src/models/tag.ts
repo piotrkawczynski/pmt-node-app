@@ -4,6 +4,7 @@ export class Tag extends Model {
   public id!: number
   public name!: string
   public image!: string
+  public projectId!: number
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
@@ -21,7 +22,7 @@ export const TagFactory = (sequelize: Sequelize) => {
         allowNull: false,
       },
       name: {
-        type: new DataTypes.STRING(128),
+        type: new DataTypes.STRING(255),
         allowNull: false,
         validate: {
           notEmpty: {
@@ -30,7 +31,7 @@ export const TagFactory = (sequelize: Sequelize) => {
         },
       },
       image: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.STRING(255),
         allowNull: true,
       },
     },

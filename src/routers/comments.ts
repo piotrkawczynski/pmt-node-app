@@ -1,12 +1,8 @@
 import * as express from "express"
-import { tags } from "../controllers"
-import { projectAccessibility } from "../middlewares/projectAccessibility"
 import * as multer from "multer"
 import { dir } from "../app"
 import { createFileName } from "../utils/createFileName"
-import { checkProjectCompletion } from "../middlewares/checkProjectCompletion"
-
-export const router = express.Router()
+import { comments } from "../controllers"
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -22,15 +18,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage })
 
-router.post(
-  "/",
-  upload.single("image"),
-  projectAccessibility,
-  tags.createTag,
-)
+export const router = express.Router()
 
-router.delete(
-  "/:id",
-  tags.deleteTag,
-  checkProjectCompletion,
-)
+router.post("/", upload.array("image"), comments.createComment)

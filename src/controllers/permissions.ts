@@ -1,8 +1,12 @@
 import { db } from "../database"
 import { Response } from "express"
 import { createErrorMessage } from "../utils/utils"
+import { Request } from "../types/express/express"
 
-const getPermissionsList = async (req, res: Response) => {
+const getPermissionsList = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const permissions = await db.Permission.findAll({
       attributes: {

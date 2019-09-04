@@ -5,8 +5,9 @@ import { db } from "../database"
 import { createToken } from "../utils/token"
 import { createErrorMessage } from "../utils/utils"
 import { Response } from "express"
+import { Request } from "../types/express/express"
 
-const register = async (req, res: Response) => {
+const register = async (req: Request, res: Response) => {
   try {
     const { email, password, confirmPassword } = req.body
 
@@ -59,7 +60,7 @@ const register = async (req, res: Response) => {
   }
 }
 
-const login = async (req, res) => {
+const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body
 

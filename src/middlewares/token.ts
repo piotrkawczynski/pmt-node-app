@@ -1,7 +1,12 @@
 import { db } from "../database"
-import { User } from "../models/user"
+import { Request, Response } from "../types/express/express"
+import { NextFunction } from "express-serve-static-core"
 
-export const getUserByToken = async (req, res, next) => {
+export const getUserByToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     if (req.method !== "OPTIONS") {
       const authorization = req.headers
@@ -23,7 +28,7 @@ export const getUserByToken = async (req, res, next) => {
           .send({ error: "Unauthorized request" })
       }
 
-      req[`user`] = user as User
+      res.locals.user = user
     }
     next()
   } catch (error) {

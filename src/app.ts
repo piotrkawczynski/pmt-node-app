@@ -8,9 +8,12 @@ import { db } from "./database"
 import {
   auth,
   projects,
-  users,
   tags,
   permissions,
+  statuses,
+  invites,
+  issues,
+  comments, sprints,
 } from "./routers"
 import { getUserByToken } from "./middlewares/token"
 
@@ -42,8 +45,13 @@ app.use("/auth", auth)
 app.use(getUserByToken)
 app.use("/permissions", permissions)
 app.use("/projects", projects)
-app.use("/users", users)
+// app.use("/users", users)
+app.use("/invites", invites)
+app.use("/issues", issues)
+app.use("/comments", comments)
 app.use("/tags", tags)
+app.use("/statuses", statuses)
+app.use("/sprints", sprints)
 
 db.sequelize
   // .sync({ force: true })

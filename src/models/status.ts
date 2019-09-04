@@ -6,16 +6,12 @@ import {
   BelongsToGetAssociationMixin,
 } from "sequelize"
 import { Project } from "./project"
-import { Attachment } from "./attachment"
 
 export class Status extends Model {
   public id!: number
   public name!: string
   public projectId!: number
   public order!: number
-
-  public attachment!: Attachment
-  public image!: string
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
@@ -56,15 +52,6 @@ export const StatusFactory = (sequelize: Sequelize) => {
       modelName: "status",
     },
   )
-
-  Status.associate = (models) => {
-    Status.belongsTo(models.Attachment, {
-      foreignKey: "attachmentId",
-    })
-    models.Attachment.hasOne(Status, {
-      foreignKey: "attachmentId",
-    })
-  }
 
   return Status
 }

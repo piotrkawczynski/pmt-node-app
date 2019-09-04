@@ -3,6 +3,7 @@ import { projects } from "../controllers"
 import * as multer from "multer"
 import { dir } from "../app"
 import { createFileName } from "../utils/createFileName"
+import { checkProjectAccess } from "../middlewares/checkProjectAccess"
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -25,8 +26,30 @@ router.post(
   upload.single("avatar"),
   projects.createProject,
 )
-router.get("/:id/users", projects.getProjectUsers)
-router.get("/:id/tags", projects.getProjectTags)
-router.get("/:id/statuses", projects.getProjectStatuses)
-router.get("/:id", projects.getProject)
+router.get(
+  "/:id/invites",
+  checkProjectAccess,
+  projects.getProjectInvites,
+)
+router.get(
+  "/:id/users",
+  checkProjectAccess,
+  projects.getProjectUsers,
+)
+router.get(
+  "/:id/tags",
+  checkProjectAccess,
+  projects.getProjectTags,
+)
+router.get(
+  "/:id/statuses",
+  checkProjectAccess,
+  projects.getProjectStatuses,
+)
+router.get(
+  "/:id/sprints",
+  checkProjectAccess,
+  projects.getProjectSprints,
+)
+router.get("/:id", checkProjectAccess, projects.getProject)
 router.get("/", projects.getUserProjects)

@@ -1,4 +1,12 @@
-import { Model, DataTypes, Sequelize } from "sequelize"
+import {
+  Model,
+  DataTypes,
+  Sequelize,
+  BelongsToSetAssociationMixin,
+  BelongsToManySetAssociationsMixin,
+} from "sequelize"
+import { Attachment } from "./attachment"
+import { Project } from "./project"
 
 export class Issue extends Model {
   public id!: number
@@ -12,10 +20,16 @@ export class Issue extends Model {
   public tagId!: number
   public projectId!: number
   public statusId!: number
+  public sprintId!: number
   public order!: number
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
+
+  public setAttachments!: BelongsToManySetAssociationsMixin<
+    Attachment,
+    Attachment["id"]
+  >
 
   public static associate: (models) => void
 }
@@ -53,10 +67,6 @@ export const IssueFactory = (sequelize: Sequelize) => {
         type: new DataTypes.STRING(),
         allowNull: false,
       },
-      attachmentId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: true,
-      },
       tagId: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
@@ -71,6 +81,10 @@ export const IssueFactory = (sequelize: Sequelize) => {
       },
       order: {
         type: new DataTypes.INTEGER(),
+        allowNull: false,
+      },
+      sprintId: {
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
       },
     },
@@ -109,13 +123,6 @@ export const IssueFactory = (sequelize: Sequelize) => {
       as: "author",
     })
 
-    Issue.belongsTo(models.Attachment, {
-      foreignKey: "attachmentId",
-    })
-    models.Attachment.hasMany(Issue, {
-      foreignKey: "attachmentId",
-    })
-
     Issue.belongsTo(models.Status, {
       foreignKey: "statusId",
     })
@@ -131,9 +138,14 @@ export const IssueFactory = (sequelize: Sequelize) => {
       foreignKey: "projectId",
     })
 
-    Issue.belongsToMany(models.Sprint, {
-      through: "issueSprint",
+    Issue.belongsToMany(Attachment, {
+      through: "issueAttachment",
       foreignKey: "issueId",
+    })
+
+    Attachment.belongsToMany(Issue, {
+      through: "issueAttachment",
+      foreignKey: "attachmentId",
     })
   }
 

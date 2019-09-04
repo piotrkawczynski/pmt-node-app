@@ -1,22 +1,22 @@
-import { Request } from "../types/express/express"
 import {
-  NextFunction,
+  Request,
+  RequestBody,
   Response,
-} from "express-serve-static-core"
+} from "../types/express/express"
+import { NextFunction } from "express-serve-static-core"
 import { db } from "../database"
 import { Project as DbProject } from "../models/project"
 import { createErrorMessage } from "../utils/utils"
-import { Project } from "../types/models/project"
 
 export const projectAccessibility = async (
-  req: Request,
+  req: RequestBody<{ projectId: number }>,
   res: Response,
   next: NextFunction,
 ) => {
   try {
     const { projectId } = req.body
 
-    const user = req.user
+    const user = res.locals.user
 
     const userProjects = await db.UserProjectPermission.findOne(
       {
@@ -41,9 +41,7 @@ export const projectAccessibility = async (
       throw Error("Unauthorized request")
     }
 
-    req.project = {
-      ...userProjects.project.get(),
-    } as Project
+    res.locals.project = userProjects.project
 
     next()
   } catch (error) {

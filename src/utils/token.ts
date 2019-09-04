@@ -1,5 +1,5 @@
-import { sign, verify } from 'jsonwebtoken'
-import { app } from '../app'
+import { sign, verify } from "jsonwebtoken"
+import { app } from "../app"
 
 export const createToken = (data) =>
   new Promise((resolve, reject) => {
@@ -7,9 +7,9 @@ export const createToken = (data) =>
       {
         data,
       },
-      app.get('secret'),
+      app.get("secret"),
       {
-        expiresIn: '2000h',
+        expiresIn: "2000h",
       },
       (err, encoded) => {
         if (err) {
@@ -23,7 +23,7 @@ export const createToken = (data) =>
 
 export const verifyToken = (token) =>
   new Promise((resolve, reject) => {
-    verify(token, app.get('secret'), (err, decoded) => {
+    verify(token, app.get("secret"), (err, decoded) => {
       if (err) {
         return reject(err)
       }

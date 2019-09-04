@@ -1,4 +1,5 @@
 import { Sequelize, DataTypes, Model } from "sequelize"
+import { Issue } from "./issue"
 
 export class Attachment extends Model {
   public id!: number
