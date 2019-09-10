@@ -38,7 +38,7 @@ export const IssueFactory = (sequelize: Sequelize) => {
   Issue.init(
     {
       id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false,
@@ -48,15 +48,15 @@ export const IssueFactory = (sequelize: Sequelize) => {
         allowNull: false,
       },
       reviewerId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       assigneeId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       authorId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       title: {
@@ -68,15 +68,15 @@ export const IssueFactory = (sequelize: Sequelize) => {
         allowNull: false,
       },
       tagId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       projectId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       statusId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       order: {
@@ -84,7 +84,7 @@ export const IssueFactory = (sequelize: Sequelize) => {
         allowNull: false,
       },
       sprintId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
     },

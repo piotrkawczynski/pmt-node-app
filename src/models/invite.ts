@@ -14,7 +14,7 @@ export const InviteFactory = (sequelize: Sequelize) => {
   Invite.init(
     {
       id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false,
@@ -24,11 +24,11 @@ export const InviteFactory = (sequelize: Sequelize) => {
         allowNull: false,
       },
       projectId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
       permissionId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
     },

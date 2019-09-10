@@ -3,13 +3,15 @@ import {
   RequestBody,
   RequestParams,
   Response,
+  Request,
 } from "../types/express/express"
 import { NextFunction } from "express-serve-static-core"
 import { UserLocals } from "../types/locals/userLocals"
 import { createErrorMessage } from "../utils/utils"
+import { Common } from "../types/request/common"
 
 export const checkProjectAccess = async (
-  req: RequestParams<{ id: number }>,
+  req: Request,
   res: Response<UserLocals>,
   next: NextFunction,
 ) => {

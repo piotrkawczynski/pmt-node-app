@@ -5,7 +5,7 @@ import {
   createImageUrl,
 } from "../utils/utils"
 import { CreateProjectFields } from "../types/request/project/createProject"
-import { Project } from "../types/models/Project"
+import { Project } from "../types/models/project"
 import { Project as DbProject } from "../models/project"
 import {
   Request,
@@ -14,9 +14,10 @@ import {
 } from "../types/express/express"
 import { UserLocals } from "../types/locals/userLocals"
 import { ProjectLocals } from "../types/locals/projectLocals"
+import { Common } from "../types/request/common"
 
 const getUserProjects = async (
-  req: RequestParams<{ id: number }>,
+  req: Request<{ id: string }>,
   res: Response<UserLocals>,
 ) => {
   try {
@@ -64,7 +65,9 @@ const getUserProjects = async (
 }
 
 const getProject = async (
-  req: RequestParams<{ id: number }>,
+  req: RequestParams<{
+  id: string
+}>,
   res: Response,
 ) => {
   try {
@@ -115,7 +118,9 @@ const getProject = async (
 }
 
 const getProjectStatuses = async (
-  req: Request<{ id: number }>,
+  req: Request<{
+  id: string
+}>,
   res: Response,
 ) => {
   try {
@@ -138,7 +143,9 @@ const getProjectStatuses = async (
 }
 
 const getProjectTags = async (
-  req: RequestParams<{ id: number }>,
+  req: RequestParams<{
+  id: string
+}>,
   res: Response,
 ) => {
   try {
@@ -168,7 +175,9 @@ const getProjectTags = async (
 }
 
 const getProjectUsers = async (
-  req: Request<{ id: number }>,
+  req: Request<{
+  id: string
+}>,
   res: Response<UserLocals>,
 ) => {
   try {
@@ -208,7 +217,9 @@ const getProjectUsers = async (
 }
 
 const getProjectInvites = async (
-  req: Request<{ id: number }>,
+  req: RequestParams<{
+  id: string
+}>,
   res: Response<UserLocals>,
 ) => {
   try {
@@ -231,7 +242,9 @@ const getProjectInvites = async (
 }
 
 const getProjectSprints = async (
-  req: Request<{ id: number }>,
+  req: Request<{
+  id: string
+}>,
   res: Response<UserLocals>,
 ) => {
   try {

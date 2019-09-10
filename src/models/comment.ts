@@ -33,17 +33,17 @@ export const CommentFactory = (sequelize: Sequelize) => {
   Comment.init(
     {
       id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false,
       },
       issueId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       authorId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       description: {
@@ -51,7 +51,7 @@ export const CommentFactory = (sequelize: Sequelize) => {
         allowNull: false,
       },
       permissionId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
     },

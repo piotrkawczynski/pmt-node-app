@@ -34,13 +34,13 @@ export const SprintFactory = (sequelize: Sequelize) => {
   Sprint.init(
     {
       id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false,
       },
       number: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       description: {
@@ -56,7 +56,7 @@ export const SprintFactory = (sequelize: Sequelize) => {
         allowNull: false,
       },
       projectId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
     },

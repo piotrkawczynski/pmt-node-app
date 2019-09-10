@@ -39,7 +39,7 @@ export const ProjectFactory = (sequelize: Sequelize) => {
   Project.init(
     {
       id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false,
@@ -65,11 +65,11 @@ export const ProjectFactory = (sequelize: Sequelize) => {
         allowNull: false,
       },
       sprintDuration: {
-        type: new DataTypes.INTEGER(),
+        type: new DataTypes.INTEGER,
       },
       completed: {
-        type: DataTypes.TINYINT({ length: 1 }),
-        defaultValue: 0,
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
     },
     {

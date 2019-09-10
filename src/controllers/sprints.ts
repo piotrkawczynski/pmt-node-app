@@ -14,6 +14,7 @@ import { UpdateSprintBody } from "../types/request/sprints/UpdateSprintBody"
 import { Op } from "sequelize"
 import { Issue } from "../models/issue"
 import { Sprint } from "../models/sprint"
+import { Common } from "../types/request/common"
 
 const createSprint = async (
   req: RequestBody<CreateSprintBody>,
@@ -45,7 +46,13 @@ const createSprint = async (
 }
 
 const updateSprint = async (
-  req: Request<{ id: number }, UpdateSprintBody>,
+  req: Request<
+    {
+      id: string
+      name: string
+    },
+    UpdateSprintBody
+  >,
   res: Response<UserLocals>,
 ) => {
   try {
@@ -98,7 +105,9 @@ const updateSprint = async (
 }
 
 const deleteSprint = async (
-  req: RequestParams<{ id: number }>,
+  req: RequestParams<{
+    id: string
+  }>,
   res: Response<UserLocals>,
 ) => {
   try {
@@ -154,7 +163,9 @@ const deleteSprint = async (
 
 const getIssueList = async (
   req: Request<
-    { id: number },
+    {
+      id: string
+    },
     any,
     { lastSprint: boolean }
   >,

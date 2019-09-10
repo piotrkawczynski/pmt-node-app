@@ -11,6 +11,7 @@ import { DeleteTag } from "../types/request/tag/deleteTag"
 import { ProjectIdLocals } from "../types/locals/projectIdLocals"
 import { NextFunction } from "express-serve-static-core"
 import { UserLocals } from "../types/locals/userLocals"
+import { Common } from "../types/request/common"
 
 export const createInvite = async (
   req: Request,
@@ -40,7 +41,9 @@ export const createInvite = async (
 }
 
 export const deleteInvite = async (
-  req: RequestParams<{ id: number }>,
+  req: RequestParams<{
+  id: string
+}>,
   res: Response<UserLocals>,
 ) => {
   try {

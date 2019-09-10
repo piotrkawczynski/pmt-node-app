@@ -29,7 +29,7 @@ export const StatusFactory = (sequelize: Sequelize) => {
   Status.init(
     {
       id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false,
@@ -39,7 +39,7 @@ export const StatusFactory = (sequelize: Sequelize) => {
         allowNull: false,
       },
       projectId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
       },
       order: {
         type: new DataTypes.INTEGER(),

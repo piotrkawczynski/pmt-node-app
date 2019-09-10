@@ -1,7 +1,8 @@
-import { Request, Response } from "express"
+import { Response } from "express"
 import * as url from "url"
 import { Status } from "../models/status"
 import { Model, ValidationError } from "sequelize"
+import { Request } from "../types/express/express"
 
 export const createImageUrl = (
   req: Request,
