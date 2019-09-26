@@ -167,7 +167,7 @@ const getIssueList = async (
       id: string
     },
     any,
-    { lastSprint: boolean }
+    { lastSprint: boolean; projectId: number }
   >,
   res: Response<UserLocals>,
 ) => {
@@ -175,31 +175,18 @@ const getIssueList = async (
     const sprintId = req.params.id
     const user = res.locals.user
     const lastSprint = req.query.lastSprint
+    const projectId = req.query.projectId
 
-    let issues
-
-    if (lastSprint) {
-      const sprint = await db.Sprint.findOne({
-        order: [["number", "DESC"]],
-      })
-
-      issues = await sprint.getIssues()
-    } else {
-      issues = await db.Issue.findAll({
-        where: {
-          sprintId,
-        },
-      })
-    }
-
-    if (!issues) {
-      return res.status(404).send({ error: "Not found" })
+    if (!projectId) {
+      return res
+        .status(422)
+        .send({ error: "No projectId in request" })
     }
 
     const userProject = await db.UserProjectPermission.findOne(
       {
         where: {
-          projectId: issues[0].projectId,
+          projectId,
           userId: user.id,
         },
       },
@@ -209,6 +196,28 @@ const getIssueList = async (
       return res
         .status(403)
         .send({ error: "Unauthorized request" })
+    }
+
+    let issues
+
+    if (lastSprint && projectId) {
+      const sprint = await db.Sprint.findOne({
+        where: { projectId },
+        order: [["number", "DESC"]],
+      })
+
+      issues = await sprint.getIssues()
+    } else {
+      issues = await db.Issue.findAll({
+        where: {
+          sprintId,
+        },
+        order: [["order", "ASC"]],
+      })
+    }
+
+    if (!issues) {
+      return res.status(404).send({ error: "Not found" })
     }
 
     res.status(200).send(issues)

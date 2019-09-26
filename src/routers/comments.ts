@@ -20,4 +20,4 @@ const upload = multer({ storage })
 
 export const router = express.Router()
 
-router.post("/", upload.array("image"), comments.createComment)
+router.post("/", upload.array("attachments[]"), comments.createComment)

@@ -3,6 +3,7 @@ import {
   DataTypes,
   Model,
   BelongsToManySetAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
 } from "sequelize"
 import { Attachment } from "./attachment"
 import { Issue } from "./issue"
@@ -24,6 +25,9 @@ export class Comment extends Model {
   public setAttachments!: BelongsToManySetAssociationsMixin<
     Attachment,
     Attachment["id"]
+  >
+  public getAttachments!: BelongsToManyGetAssociationsMixin<
+    Attachment
   >
 
   public static associate: (models) => void

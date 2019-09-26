@@ -2,11 +2,11 @@ import {
   Model,
   DataTypes,
   Sequelize,
-  BelongsToSetAssociationMixin,
   BelongsToManySetAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyAddAssociationsMixin,
 } from "sequelize"
 import { Attachment } from "./attachment"
-import { Project } from "./project"
 
 export class Issue extends Model {
   public id!: number
@@ -30,6 +30,13 @@ export class Issue extends Model {
     Attachment,
     Attachment["id"]
   >
+  public addAttachments!: BelongsToManyAddAssociationsMixin<
+    Attachment,
+    Attachment["id"]
+  >
+  public getAttachments!: BelongsToManyGetAssociationsMixin<
+    Attachment
+  >
 
   public static associate: (models) => void
 }
@@ -49,7 +56,7 @@ export const IssueFactory = (sequelize: Sequelize) => {
       },
       reviewerId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       assigneeId: {
         type: DataTypes.INTEGER,

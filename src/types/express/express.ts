@@ -16,13 +16,11 @@ export interface Request<
 
 // @ts-ignore
 export interface RequestParams<Params>
-  extends Request<Params>,
-    ExpressRequest {}
+  extends Request<Params> {}
 
 // @ts-ignore
 export interface RequestBody<Body>
-  extends Request<any, Body>,
-    ExpressRequest {}
+  extends Request<any, Body> {}
 
 export interface Response<T = any> extends ExpressResponse {
   locals: T

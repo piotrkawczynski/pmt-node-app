@@ -1,12 +1,11 @@
-export interface CreateIssueBody {
-  id?: number
+export interface UpdateIssueBody {
+  id: number
   reviewerId: number
   assigneeId: number
   title: string
   description: string
   tagId: number
-  projectId: number
   statusId: number
   order: number
-  sprintId: number
+  attachmentUrls: string[]
 }
