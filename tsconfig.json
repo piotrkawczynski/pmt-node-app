@@ -1,13 +1,17 @@
 {
   "compilerOptions": {
-    "typeRoots": ["node_modules/@types", "src/types/**/*.ts"],
+    "typeRoots": [
+      "node_modules/@types",
+      "src/types/**/*.ts"
+    ],
     "target": "ES2017",
     "moduleResolution": "node",
+    "module": "commonjs",
     "outDir": "./dist",
     "pretty": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": false
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts"],
-  "exclude": ["node_modules", ".vscode", ".idea"],
-  "files": ["index.d.ts"]
+  "exclude": ["node_modules", ".vscode", ".idea"]
 }
