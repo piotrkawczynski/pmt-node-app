@@ -135,7 +135,7 @@ export const IssueFactory = (sequelize: Sequelize) => {
     })
     models.Status.hasMany(Issue, { foreignKey: "statusId" })
 
-    Issue.belongsTo(models.Tag, { foreignKey: "tagId" })
+    Issue.belongsTo(models.Tag, { foreignKey: "tagId", onDelete: "SET NULL"  })
     models.Tag.hasMany(Issue, { foreignKey: "tagId" })
 
     Issue.belongsTo(models.Project, {

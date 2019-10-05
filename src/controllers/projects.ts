@@ -66,8 +66,8 @@ const getUserProjects = async (
 
 const getProject = async (
   req: RequestParams<{
-  id: string
-}>,
+    id: string
+  }>,
   res: Response,
 ) => {
   try {
@@ -119,8 +119,8 @@ const getProject = async (
 
 const getProjectStatuses = async (
   req: Request<{
-  id: string
-}>,
+    id: string
+  }>,
   res: Response,
 ) => {
   try {
@@ -130,6 +130,7 @@ const getProjectStatuses = async (
       where: {
         projectId,
       },
+      order: [["order", "ASC"]],
       attributes: {
         exclude: ["projectId"],
       },
@@ -144,8 +145,8 @@ const getProjectStatuses = async (
 
 const getProjectTags = async (
   req: RequestParams<{
-  id: string
-}>,
+    id: string
+  }>,
   res: Response,
 ) => {
   try {
@@ -176,8 +177,8 @@ const getProjectTags = async (
 
 const getProjectUsers = async (
   req: Request<{
-  id: string
-}>,
+    id: string
+  }>,
   res: Response<UserLocals>,
 ) => {
   try {
@@ -218,8 +219,8 @@ const getProjectUsers = async (
 
 const getProjectInvites = async (
   req: RequestParams<{
-  id: string
-}>,
+    id: string
+  }>,
   res: Response<UserLocals>,
 ) => {
   try {
@@ -243,8 +244,8 @@ const getProjectInvites = async (
 
 const getProjectSprints = async (
   req: Request<{
-  id: string
-}>,
+    id: string
+  }>,
   res: Response<UserLocals>,
 ) => {
   try {
