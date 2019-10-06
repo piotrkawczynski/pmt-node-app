@@ -1,5 +1,5 @@
 import * as express from "express"
-import { projects } from "../controllers"
+import { issues, projects } from "../controllers"
 import * as multer from "multer"
 import { dir } from "../app"
 import { createFileName } from "../utils/createFileName"
@@ -53,3 +53,4 @@ router.get(
 )
 router.get("/:id", checkProjectAccess, projects.getProject)
 router.get("/", projects.getUserProjects)
+router.get("/:id/backlog", projects.getBacklogIssues)

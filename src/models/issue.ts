@@ -20,8 +20,7 @@ export class Issue extends Model {
   public tagId!: number
   public projectId!: number
   public statusId!: number
-  public sprintId!: number
-  public order!: number
+  public sprintId!: number | null
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
@@ -86,13 +85,9 @@ export const IssueFactory = (sequelize: Sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      order: {
-        type: new DataTypes.INTEGER(),
-        allowNull: false,
-      },
       sprintId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
     },
     {

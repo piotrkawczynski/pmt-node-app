@@ -6,6 +6,5 @@ export interface UpdateIssueBody {
   description: string
   tagId: number
   statusId: number
-  order: number
   attachmentUrls: string[]
 }

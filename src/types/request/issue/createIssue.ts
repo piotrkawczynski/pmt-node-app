@@ -7,6 +7,5 @@ export interface CreateIssueBody {
   tagId: number
   projectId: number
   statusId: number
-  order: number
   sprintId: number
 }

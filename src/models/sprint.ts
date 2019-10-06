@@ -3,7 +3,8 @@ import {
   Model,
   BelongsToManyAddAssociationsMixin,
   BelongsToManyAddAssociationMixin,
-  DataTypes, HasManyGetAssociationsMixin,
+  DataTypes,
+  HasManyGetAssociationsMixin,
 } from "sequelize"
 import { Issue } from "./issue"
 
@@ -78,7 +79,6 @@ export const SprintFactory = (sequelize: Sequelize) => {
     Sprint.hasMany(models.Issue, {
       foreignKey: "sprintId",
     })
-
     Issue.belongsTo(models.Sprint, {
       foreignKey: "sprintId",
     })

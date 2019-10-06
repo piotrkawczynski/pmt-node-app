@@ -293,6 +293,25 @@ const createProject = async (req: Request, res) => {
   }
 }
 
+const getBacklogIssues = async (
+  req: Request<{ id: string }>,
+  res: Response<UserLocals>,
+) => {
+  try {
+    const projectId = req.params.id
+
+    const backlogIssues = await db.Issue.findAll({
+      where: { projectId, sprintId: null },
+    })
+
+    res.status(200).send(backlogIssues)
+  } catch (error) {
+    // tslint:disable-next-line:no-console
+    console.error(error)
+    res.status(400).send(createErrorMessage(error))
+  }
+}
+
 export {
   getUserProjects,
   getProject,
@@ -302,4 +321,5 @@ export {
   getProjectInvites,
   createProject,
   getProjectSprints,
+  getBacklogIssues,
 }

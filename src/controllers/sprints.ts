@@ -207,15 +207,12 @@ const getIssueList = async (
       })
 
       issues = await sprint.getIssues()
-      issues = await issues.sort((a, b) => {
-        return a.order > b.order
-      })
     } else {
       issues = await db.Issue.findAll({
         where: {
           sprintId,
         },
-        order: [["order", "ASC"]],
+        order: [["id", "ASC"]],
       })
     }
 

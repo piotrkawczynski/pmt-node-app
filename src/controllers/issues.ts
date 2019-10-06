@@ -12,6 +12,8 @@ import { CreateIssueBody } from "../types/request/issue/createIssue"
 import { Transaction } from "sequelize"
 import { UserLocals } from "../types/locals/userLocals"
 import { UpdateIssueBody } from "../types/request/issue/updateIssue"
+import { UpdateIssueStatus } from "../types/request/issue/updateIssueStatus"
+import { UpdateIssueSprint } from "../types/request/issue/updateIssueSprint"
 
 export const createIssue = async (
   req: RequestBody<CreateIssueBody>,
@@ -32,14 +34,12 @@ export const createIssue = async (
 
     const lastIssue = await db.Issue.findOne({
       where: { sprintId: fields.sprintId },
-      order: [["order", "DESC"]],
+      order: [["id", "DESC"]],
     })
 
-    let order = 1
     let code = 1
 
     if (lastIssue) {
-      order = lastIssue.order + 1
       code = lastIssue.code + 1
     }
 
@@ -49,7 +49,7 @@ export const createIssue = async (
     )
 
     const createdIssue = await db.Issue.create(
-      { ...fields, code, order, authorId: user.id },
+      { ...fields, code, authorId: user.id },
       { transaction },
     )
 
@@ -204,6 +204,48 @@ export const getIssue = async (
     )
 
     res.status(200).send({ ...issue.get(), attachments })
+  } catch (error) {
+    // tslint:disable-next-line:no-console
+    console.error(error)
+    res.status(400).send(createErrorMessage(error))
+  }
+}
+
+export const updateIssueStatus = async (
+  req: RequestBody<UpdateIssueStatus>,
+  res: Response<UserLocals>,
+) => {
+  try {
+    const issueId = req.params.id
+    const { statusId } = req.body
+
+    const updatedIssue = await db.Issue.update(
+      { statusId },
+      { where: { id: issueId } },
+    )
+
+    res.status(200).send(updatedIssue)
+  } catch (error) {
+    // tslint:disable-next-line:no-console
+    console.error(error)
+    res.status(400).send(createErrorMessage(error))
+  }
+}
+
+export const updateIssueSprint = async (
+  req: Request<{ id: string }, UpdateIssueSprint>,
+  res: Response<UserLocals>,
+) => {
+  try {
+    const issueId = req.params.id
+    const { sprintId } = req.body
+
+    const updatedIssue = await db.Issue.update(
+      { sprintId },
+      { where: { id: issueId } },
+    )
+
+    res.status(200).send(updatedIssue)
   } catch (error) {
     // tslint:disable-next-line:no-console
     console.error(error)
