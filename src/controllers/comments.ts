@@ -2,9 +2,13 @@ import {
   RequestBody,
   Response,
   Request,
+  RequestParams,
 } from "../types/express/express"
 import { db } from "../database"
-import { createErrorMessage, createImageUrl } from "../utils/utils"
+import {
+  createErrorMessage,
+  createImageUrl,
+} from "../utils/utils"
 import { Transaction } from "sequelize"
 import { CreateCommentBody } from "../types/request/comment/createComment"
 import { UserLocals } from "../types/locals/userLocals"
@@ -69,17 +73,13 @@ export const getCommentList = async (
       transaction,
     })
 
-    // console.log(comments)
-
     const commentsWithAttachments = await Promise.all(
       comments.map(async (comment) => {
-        // console.log(comment)
         const attachmentsEntities = await comment.getAttachments()
 
         const attachments = attachmentsEntities.map(
           ({ image }) => createImageUrl(req, image),
         )
-        console.log(attachments)
 
         return {
           ...comment.get(),
@@ -98,6 +98,32 @@ export const getCommentList = async (
   } catch (error) {
     // tslint:disable-next-line:no-console
     await transaction.rollback()
+    console.error(error)
+    res.status(400).send(createErrorMessage(error))
+  }
+}
+
+export const deleteComment = async (
+  req: RequestParams<{ id: string }>,
+  res: Response<UserLocals>,
+) => {
+  try {
+    const commentId = req.params.id
+    const userId = res.locals.user.id
+
+    const comment = await db.Comment.findOne({
+      where: { id: commentId, authorId: userId },
+    })
+
+    if (comment) {
+      await comment.destroy()
+
+      return res.status(200).send()
+    }
+
+    res.status(404).send("Not found")
+  } catch (error) {
+    // tslint:disable-next-line:no-console
     console.error(error)
     res.status(400).send(createErrorMessage(error))
   }

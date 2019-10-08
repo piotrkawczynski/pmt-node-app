@@ -21,3 +21,4 @@ const upload = multer({ storage })
 export const router = express.Router()
 
 router.post("/", upload.array("attachments[]"), comments.createComment)
+router.delete("/:id", comments.deleteComment)

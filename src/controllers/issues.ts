@@ -1,6 +1,7 @@
 import {
   Request,
   RequestBody,
+  RequestParams,
   Response,
 } from "../types/express/express"
 import { db } from "../database"
@@ -33,7 +34,7 @@ export const createIssue = async (
     })
 
     const lastIssue = await db.Issue.findOne({
-      where: { sprintId: fields.sprintId },
+      where: { projectId: fields.projectId },
       order: [["id", "DESC"]],
     })
 
@@ -156,7 +157,7 @@ export const updateIssue = async (
 
     await transaction.commit()
 
-    res.status(200).send()
+    res.status(200).send(updatedIssue[1][0])
   } catch (error) {
     // tslint:disable-next-line:no-console
     await transaction.rollback()
@@ -246,6 +247,46 @@ export const updateIssueSprint = async (
     )
 
     res.status(200).send(updatedIssue)
+  } catch (error) {
+    // tslint:disable-next-line:no-console
+    console.error(error)
+    res.status(400).send(createErrorMessage(error))
+  }
+}
+
+export const deleteIssue = async (
+  req: RequestParams<{ id: string }>,
+  res: Response<UserLocals>,
+) => {
+  try {
+    const issueId = req.params.id
+    const user = res.locals.user
+
+    const issueToDelete = await db.Issue.findOne({
+      where: { id: issueId },
+    })
+
+    if (!issueToDelete) {
+      return res.status(404).send("Not found")
+    }
+
+    const userProjectPermission = await db.UserProjectPermission.findOne(
+      {
+        where: {
+          userId: user.id,
+          projectId: issueToDelete.projectId,
+          permissionId: 2
+        },
+      },
+    )
+
+    if (!userProjectPermission) {
+      return res.status(403).send("Unauthorized request")
+    }
+
+    await issueToDelete.destroy()
+
+    res.status(200).send()
   } catch (error) {
     // tslint:disable-next-line:no-console
     console.error(error)
