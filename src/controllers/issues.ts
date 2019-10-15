@@ -7,7 +7,7 @@ import {
 import { db } from "../database"
 import {
   createErrorMessage,
-  createImageUrl,
+  createUrl,
 } from "../utils/utils"
 import { CreateIssueBody } from "../types/request/issue/createIssue"
 import { Transaction } from "sequelize"
@@ -103,7 +103,7 @@ export const updateIssue = async (
       .filter(
         (attachment) =>
           !fields.attachmentUrls.includes(
-            createImageUrl(req, attachment.image),
+            createUrl(req, attachment.image),
           ),
       )
       .map(({ id }) => id)
@@ -201,7 +201,7 @@ export const getIssue = async (
 
     const attachmentEntities = await issue.getAttachments()
     const attachments = attachmentEntities.map(
-      ({ image }) => createImageUrl(req, image),
+      ({ image }) => createUrl(req, image),
     )
 
     res.status(200).send({ ...issue.get(), attachments })

@@ -22,6 +22,8 @@ export const getUserByToken = async (
         where: { token: authorization.split(" ")[1] },
       })
 
+      console.log("authorization", authorization)
+
       if (!user) {
         return res
           .status(403)

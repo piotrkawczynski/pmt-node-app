@@ -2,7 +2,7 @@ import { db } from "../database"
 import { User } from "../models/user"
 import {
   createErrorMessage,
-  createImageUrl,
+  createUrl,
 } from "../utils/utils"
 import { CreateProjectFields } from "../types/request/project/createProject"
 import { Project } from "../types/models/project"
@@ -49,10 +49,7 @@ const getUserProjects = async (
       return {
         ...userProject.project.get(),
         permissionId: userProject.permissionId,
-        avatar: createImageUrl(
-          req,
-          userProject.project.avatar,
-        ),
+        avatar: createUrl(req, userProject.project.avatar),
       }
     })
 
@@ -108,7 +105,7 @@ const getProject = async (
     const project = userProject.get("project")
 
     if (project.avatar) {
-      project.avatar = createImageUrl(req, project.avatar)
+      project.avatar = createUrl(req, project.avatar)
     }
     res.status(200).send(project)
   } catch (error) {
@@ -164,7 +161,7 @@ const getProjectTags = async (
     const updatedTags = tags.map((tag) => {
       return {
         ...tag.get(),
-        image: createImageUrl(req, tag.image),
+        image: createUrl(req, tag.image),
       }
     })
 
@@ -258,6 +255,7 @@ const getProjectSprints = async (
       attributes: {
         exclude: ["projectId", "createdAt", "updatedAt"],
       },
+      order: ["number"],
     })
 
     res.status(200).send(sprintList)

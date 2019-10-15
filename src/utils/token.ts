@@ -1,7 +1,10 @@
 import { sign, verify } from "jsonwebtoken"
 import { app } from "../app"
+import * as base64url from "base64-url"
+import { format } from "url"
+import { Request } from "../types/express/express"
 
-export const createToken = (data) =>
+export const createToken = (data): Promise<string> =>
   new Promise((resolve, reject) => {
     sign(
       {
@@ -31,3 +34,20 @@ export const verifyToken = (token) =>
       return resolve(decoded)
     })
   })
+
+export const createMailToken = (
+  email: string,
+  req: Request,
+) => {
+  const token = base64url.encode(
+    `${email}${new Date().getTime()}`,
+  )
+
+  const url = format({
+    host: req.get("origin"),
+    pathname: "/change-password",
+    query: { token },
+  })
+
+  return { token, url }
+}

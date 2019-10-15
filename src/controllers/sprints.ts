@@ -1,5 +1,5 @@
 import { db } from "../database"
-import { createErrorMessage } from "../utils/utils"
+import { createErrorMessage, omit } from "../utils/utils"
 import {
   Request,
   RequestBody,
@@ -96,7 +96,15 @@ const updateSprint = async (
       throw Error("Something went wrong")
     }
 
-    res.status(200).send(updatedSprint)
+    res
+      .status(200)
+      .send(
+        omit(updatedSprint.get(), [
+          "projectId",
+          "createdAt",
+          "updatedAt",
+        ]),
+      )
   } catch (error) {
     // tslint:disable-next-line:no-console
     console.error(error)
@@ -105,7 +113,7 @@ const updateSprint = async (
 }
 
 const deleteSprint = async (
-  req: RequestParams<{
+  req: Request<{
     id: string
   }>,
   res: Response<UserLocals>,
@@ -206,13 +214,13 @@ const getIssueList = async (
         order: [["number", "DESC"]],
       })
 
-      issues = await sprint.getIssues()
+      issues = await sprint.getIssues({ order: ["code"] })
     } else {
       issues = await db.Issue.findAll({
         where: {
           sprintId,
         },
-        order: [["id", "ASC"]],
+        order: ["code"],
       })
     }
 

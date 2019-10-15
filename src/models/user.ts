@@ -3,9 +3,11 @@ import {
   DataTypes,
   Model,
   HasManyGetAssociationsMixin,
+  BelongsToSetAssociationMixin,
 } from "sequelize"
 import { omit } from "lodash"
 import { UserProjectPermission } from "./userProjectPermission"
+import { RemainPassword } from "./remainPassword"
 
 export class User extends Model {
   public id!: number
@@ -16,8 +18,15 @@ export class User extends Model {
   public lastName!: string
   public token!: string
 
+  public remainPasswordId!: number
+
   public getUserProjectPermissions!: HasManyGetAssociationsMixin<
     UserProjectPermission
+  >
+
+  public setRemainPassword!: BelongsToSetAssociationMixin<
+    RemainPassword,
+    RemainPassword["id"]
   >
 
   public readonly createdAt!: Date
@@ -92,6 +101,10 @@ export const UserFactory = (sequelize: Sequelize) => {
       },
       token: {
         type: new DataTypes.STRING(),
+        allowNull: true,
+      },
+      remainPasswordId: {
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
     },

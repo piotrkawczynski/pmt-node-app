@@ -1,7 +1,7 @@
 import { db } from "../database"
 import {
   createErrorMessage,
-  createImageUrl,
+  createUrl,
 } from "../utils/utils"
 import { CreateTagFields } from "../types/request/tag/createTag"
 import { CreateTagResponse } from "../types/response/tag/createTag"
@@ -36,7 +36,7 @@ export const createTag = async (
     const createdTag = {
       id: tag.id,
       name: tag.name,
-      image: createImageUrl(req, tag.image),
+      image: createUrl(req, tag.image),
     } as CreateTagResponse
 
     await projectCompletion(tag.projectId)

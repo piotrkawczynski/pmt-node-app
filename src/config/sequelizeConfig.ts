@@ -1,7 +1,7 @@
 export default {
   database: "pmt-db",
-  username: "postgres",
-  password: "admin",
+  username: "piotr",
+  password: "lubieplacki",
   params: {
     host: "localhost",
     post: "5432",

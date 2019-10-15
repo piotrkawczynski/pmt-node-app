@@ -1,5 +1,5 @@
 import { router as auth } from "./auth"
-// import { router as users } from "./users"
+import { router as users } from "./users"
 import { router as permissions } from "./permissions"
 import { router as projects } from "./projects"
 import { router as tags } from "./tags"
@@ -11,7 +11,7 @@ import { router as comments } from "./comments"
 
 export {
   auth,
-  // users,
+  users,
   projects,
   tags,
   permissions,

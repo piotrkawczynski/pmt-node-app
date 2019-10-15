@@ -1,10 +1,8 @@
-import { Response } from "express"
 import * as url from "url"
-import { Status } from "../models/status"
 import { Model, ValidationError } from "sequelize"
 import { Request } from "../types/express/express"
 
-export const createImageUrl = (
+export const createUrl = (
   req: Request,
   fileName: string,
 ) => {
@@ -24,7 +22,7 @@ export const updateObjectWithUrl = <T extends {}>(
   if (!plainObject.attachment) {
     plainObject.image = null
   } else {
-    plainObject.image = createImageUrl(
+    plainObject.image = createUrl(
       req,
       plainObject.attachment.name,
     )

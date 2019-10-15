@@ -10,6 +10,7 @@ import { TagFactory } from "./tag"
 import { UserFactory } from "./user"
 import { UserProjectPermissionFactory } from "./userProjectPermission"
 import { ProjectFactory } from "./project"
+import { RemainPasswordFactory } from "./remainPassword"
 
 export const createModels = (sequelizeConfig: any) => {
   const {
@@ -34,6 +35,7 @@ export const createModels = (sequelizeConfig: any) => {
     Issue: IssueFactory(sequelize),
     Permission: PermissionFactory(sequelize),
     Project: ProjectFactory(sequelize),
+    RemainPassword: RemainPasswordFactory(sequelize),
     Sprint: SprintFactory(sequelize),
     Status: StatusFactory(sequelize),
     Tag: TagFactory(sequelize),

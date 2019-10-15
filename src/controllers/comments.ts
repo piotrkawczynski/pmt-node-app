@@ -7,7 +7,7 @@ import {
 import { db } from "../database"
 import {
   createErrorMessage,
-  createImageUrl,
+  createUrl,
 } from "../utils/utils"
 import { Transaction } from "sequelize"
 import { CreateCommentBody } from "../types/request/comment/createComment"
@@ -78,7 +78,7 @@ export const getCommentList = async (
         const attachmentsEntities = await comment.getAttachments()
 
         const attachments = attachmentsEntities.map(
-          ({ image }) => createImageUrl(req, image),
+          ({ image }) => createUrl(req, image),
         )
 
         return {
