@@ -12,6 +12,7 @@ import { ProjectIdLocals } from "../types/locals/projectIdLocals"
 import { NextFunction } from "express-serve-static-core"
 import { UserLocals } from "../types/locals/userLocals"
 import { Common } from "../types/request/common"
+import { UserProjectPermission } from "../models/userProjectPermission"
 
 export const createInvite = async (
   req: Request,
@@ -19,6 +20,18 @@ export const createInvite = async (
 ) => {
   try {
     const body = req.body as CreateInviteBody
+
+    const user = await db.User.findOne({
+      where: { email: body.email },
+    })
+
+    if (user) {
+      await db.UserProjectPermission.create({
+        projectId: body.projectId,
+        permissionId: body.permissionId,
+        userId: user.id,
+      })
+    }
 
     const invite = await db.Invite.create(body)
 
@@ -42,8 +55,8 @@ export const createInvite = async (
 
 export const deleteInvite = async (
   req: RequestParams<{
-  id: string
-}>,
+    id: string
+  }>,
   res: Response<UserLocals>,
 ) => {
   try {
@@ -66,6 +79,18 @@ export const deleteInvite = async (
     if (!userProjectPermission) {
       res.status(403).send({ error: "Unauthorized user" })
     }
+
+    const foundUser = await db.User.findOne({
+      where: { email: invite.email },
+    })
+
+    await db.UserProjectPermission.destroy({
+      where: {
+        userId: foundUser.id,
+        projectId: invite.projectId,
+        permissionId: invite.permissionId,
+      },
+    })
 
     await db.Invite.destroy({
       where: { id },

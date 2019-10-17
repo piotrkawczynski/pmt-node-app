@@ -49,8 +49,24 @@ const register = async (req: Request, res: Response) => {
       token,
     }
 
+    const invites = await db.Invite.findAll({
+      where: {
+        email,
+      },
+    })
+
     const createdUser = await db.User.create(
       omit(userValues, ["confirmPassword"]),
+    )
+
+    await Promise.all(
+      invites.map(async (invite) => {
+        return db.UserProjectPermission.create({
+          userId: createdUser.id,
+          permissionId: invite.permissionId,
+          projectId: invite.projectId,
+        })
+      }),
     )
 
     res

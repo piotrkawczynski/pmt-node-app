@@ -7,6 +7,7 @@
     "start": "node --inspect=5858 -r ts-node/register ./src/app.ts",
     "dev": "nodemon",
     "build": "tsc",
+    "lint:ts": "tslint --project . --format verbose",
     "test": "mocha ./tests --recursive"
   },
   "author": "Piotr Kawczyński",

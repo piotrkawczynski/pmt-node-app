@@ -75,7 +75,7 @@ export const IssueFactory = (sequelize: Sequelize) => {
       },
       tagId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       projectId: {
         type: DataTypes.INTEGER,
@@ -83,7 +83,7 @@ export const IssueFactory = (sequelize: Sequelize) => {
       },
       statusId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       sprintId: {
         type: DataTypes.INTEGER,
