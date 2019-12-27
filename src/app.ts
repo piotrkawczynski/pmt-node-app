@@ -2,6 +2,7 @@ import * as express from "express"
 import * as bodyParser from "body-parser"
 import * as morgan from "morgan"
 import * as path from "path"
+import * as cors from "cors"
 
 import config from "./config/config"
 import { db } from "./database"
@@ -26,23 +27,12 @@ app.set("secret", config.secret)
 
 export const dir = path.join(__dirname, "public")
 
+app.use(cors())
 app.use(express.static(dir))
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*")
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE",
-  )
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization",
-  )
-  next()
-})
 app.use(morgan("dev"))
+
 app.use("/auth", auth)
 app.use(getUserByToken)
 app.use("/permissions", permissions)
