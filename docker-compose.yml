@@ -1,0 +1,26 @@
+version: "3.1"
+services:  
+  postgres:
+    image: postgres
+    container_name: pmt-psql
+    networks: 
+      - webnet
+    environment:
+      POSTGRES_USER: piotr
+      POSTGRES_PASSWORD: lubieplacki
+      POSTGRES_DB: pmt-db
+    volumes: ["/home/piotr/Database/pmt-db-container/data:/var/lib/postgresql/data"]
+  app:
+    image: pmt-node
+    container_name: pmt-node-app
+    networks: 
+      - webnet
+    environment:
+      DB_HOST: postgres
+    depends_on:
+      - postgres
+    ports:
+      - "3333:3333"
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "yarn", "dev"]
+networks:
+  webnet:
