@@ -102,6 +102,8 @@ const login = async (req: Request, res: Response) => {
 
     const user = await db.User.findOne({ where: { email } })
 
+    console.log(user)
+
     if (!user) {
       throw {
         name: "email",
